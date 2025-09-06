@@ -1,0 +1,200 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ChatGPT Dark Theme - Updated */
+
+/* Variables CSS pour les couleurs bokeh */
+:root {
+  --bokeh-blue: 59, 130, 246;
+  --bokeh-violet: 139, 92, 246; 
+  --bokeh-orange: 251, 146, 60;
+  --bokeh-red: 239, 68, 68;
+  --bokeh-purple: 168, 85, 247;
+  --bokeh-pink: 236, 72, 153;
+  --bg-dark: #0f0f14;
+  --bg-darker: #080809;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    background: var(--bg-darker) !important;
+  }
+  
+  body {
+    background: var(--bg-dark) !important;
+    background-attachment: fixed !important;
+    position: relative;
+    color: #ffffff !important;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto !important;
+  }
+  
+  /* Fond bokeh principal avec gradients colorés flous - version plus claire */
+  body::before {
+    content: '' !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: 
+      /* Gradients bokeh colorés avec opacités augmentées */
+      radial-gradient(ellipse 800px 600px at 20% 30%, rgba(var(--bokeh-blue), 0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 700px 500px at 80% 20%, rgba(var(--bokeh-violet), 0.15) 0%, transparent 65%),
+      radial-gradient(ellipse 600px 800px at 30% 80%, rgba(var(--bokeh-orange), 0.12) 0%, transparent 75%),
+      radial-gradient(ellipse 500px 600px at 70% 70%, rgba(var(--bokeh-red), 0.14) 0%, transparent 68%),
+      radial-gradient(ellipse 900px 700px at 50% 50%, rgba(var(--bokeh-purple), 0.10) 0%, transparent 80%),
+      radial-gradient(ellipse 400px 500px at 85% 15%, rgba(var(--bokeh-pink), 0.16) 0%, transparent 60%) !important;
+    filter: blur(70px) !important;
+    pointer-events: none !important;
+    z-index: -2 !important;
+    animation: bokehFloat 35s ease-in-out infinite !important;
+    will-change: transform, opacity !important;
+  }
+  
+  /* Vignette sombre sur les bords */
+  body::after {
+    content: '' !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: 
+      /* Vignette radiale du centre vers les bords - plus subtile */
+      radial-gradient(ellipse 70% 55% at center, transparent 25%, rgba(var(--bg-darker), 0.2) 65%, rgba(var(--bg-darker), 0.6) 90%, rgba(var(--bg-darker), 0.9) 100%) !important;
+    pointer-events: none !important;
+    z-index: -1 !important;
+  }
+}
+
+@layer components {
+  /* Classe utilitaire héritant du fond bokeh global */
+  .gradient-bg {
+    background: transparent !important;
+    position: relative !important;
+    min-height: 100vh !important;
+  }
+  
+  .grain {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+    opacity: 1;
+  }
+  
+  .card {
+    background: rgba(68, 70, 84, 0.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+  }
+  
+  .card:hover {
+    background: rgba(68, 70, 84, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+    color: white;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    transition: all 0.2s ease;
+    font-size: 14px;
+  }
+  
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+  }
+  
+  .btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    color: white;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    transition: all 0.2s ease;
+    font-size: 14px;
+  }
+  
+  .btn-secondary:hover {
+    background: rgba(245, 158, 11, 0.2);
+    backdrop-filter: blur(10px);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    border-color: rgba(245, 158, 11, 0.5);
+  }
+  
+  .text-gradient {
+    background: linear-gradient(135deg, #f59e0b 0%, #ea580c 50%, #dc2626 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .floating-element {
+    position: absolute;
+    opacity: 0.3;
+    filter: blur(2px);
+    animation: float 20s ease-in-out infinite;
+  }
+}
+
+@layer utilities {
+  .animate-float {
+    animation: float 8s ease-in-out infinite;
+  }
+  
+  .animate-float-slow {
+    animation: float 12s ease-in-out infinite;
+  }
+  
+  .animate-float-fast {
+    animation: float 6s ease-in-out infinite;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-15px) rotate(1deg);
+  }
+  66% {
+    transform: translateY(-8px) rotate(-0.5deg);
+  }
+}
+
+/* Animation bokeh lente et fluide */
+@keyframes bokehFloat {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  25% {
+    transform: translate(-30px, -40px) scale(1.08) rotate(0.8deg);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate(25px, 35px) scale(0.92) rotate(-0.5deg);
+    opacity: 0.9;
+  }
+  75% {
+    transform: translate(-15px, -20px) scale(1.05) rotate(0.3deg);
+    opacity: 0.88;
+  }
+}
+
