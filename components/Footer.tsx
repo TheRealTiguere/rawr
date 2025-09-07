@@ -1,11 +1,9 @@
 'use client'
 
 import Link from 'next/link';
-import { useState } from 'react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const [logoError, setLogoError] = useState(false);
 
   const quickLinks = [
     { label: "Nos Services", href: "#services" },
@@ -19,9 +17,7 @@ export default function Footer() {
   ];
 
   const socialLinks = [
-    { icon: "💼", label: "LinkedIn", href: "#" },
-    { icon: "📷", label: "Instagram", href: "#" },
-    { icon: "🐦", label: "Twitter", href: "#" }
+    { icon: "💼", label: "LinkedIn", href: "#" }
   ];
 
   return (
@@ -35,23 +31,7 @@ export default function Footer() {
           {/* Logo et description */}
           <div className="md:col-span-1">
             <div className="flex items-center space-x-3 mb-6">
-              {!logoError ? (
-                <img 
-                  src="/logo-rawr.png" 
-                  alt="RAWR Agency Logo" 
-                  width={120} 
-                  height={40}
-                  className="h-8 w-auto object-contain"
-                  onError={() => setLogoError(true)}
-                />
-              ) : (
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">
-                    R
-                  </div>
-                  <span className="text-2xl font-bold text-white">RAWRAGENCY</span>
-                </div>
-              )}
+              <span className="text-2xl font-bold text-white">RAWR</span>
             </div>
             
             <p className="text-gray-300 leading-relaxed mb-6 max-w-sm">
