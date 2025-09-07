@@ -20,7 +20,7 @@ export default function Portfolio() {
   ];
 
   return (
-    <section id="portfolio" className="py-8 relative overflow-hidden scroll-mt-28">
+    <section id="portfolio" className="py-8 relative overflow-hidden scroll-mt-40">
       
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         {/* Header */}
@@ -55,13 +55,13 @@ export default function Portfolio() {
                 </div>
                 
                 {/* Badge catégorie */}
-                <div className="absolute top-4 left-4 px-3 py-1 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-xs font-medium text-white shadow-sm">
+                <div className="absolute top-4 left-4 px-4 py-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-sm font-medium text-white shadow-sm">
                   {project.category}
                 </div>
                 
                 {/* Featured badge */}
                 {project.featured && (
-                  <div className="absolute top-4 right-4 px-3 py-1 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-medium rounded-full">
+                  <div className="absolute top-4 right-4 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-sm font-medium rounded-full shadow-lg">
                     ⭐ Projet vedette
                   </div>
                 )}

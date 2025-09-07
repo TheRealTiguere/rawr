@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { inquirySchema, type InquiryFormData } from '@/lib/validations'
+import { useReCaptchaV3 } from './ReCaptcha'
 
 export default function ContactForm() {
   const [formData, setFormData] = useState<InquiryFormData>({
@@ -11,7 +12,8 @@ export default function ContactForm() {
     budget: undefined,
     message: '',
     consent: false,
-    honeypot: ''
+    honeypot: '',
+    recaptchaToken: ''
   })
   
   const [errors, setErrors] = useState<Partial<InquiryFormData>>({})
@@ -33,20 +35,55 @@ export default function ContactForm() {
     }
   }
 
+  const handleReCaptchaVerify = (token: string) => {
+    console.log('🔐 reCAPTCHA vérifié:', token ? 'Token reçu' : 'Pas de token')
+    setFormData(prev => ({ ...prev, recaptchaToken: token }))
+    // Clear captcha error if exists
+    if (errors.recaptchaToken) {
+      setErrors(prev => ({ ...prev, recaptchaToken: undefined }))
+    }
+  }
+
+  const handleReCaptchaError = (error: string) => {
+    console.error('❌ Erreur reCAPTCHA:', error)
+    setFormData(prev => ({ ...prev, recaptchaToken: '' }))
+    setErrors(prev => ({ ...prev, recaptchaToken: 'Erreur lors de la vérification de sécurité' }))
+  }
+
+  const { executeReCaptcha } = useReCaptchaV3({
+    onVerify: handleReCaptchaVerify,
+    onError: handleReCaptchaError
+  })
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    console.log('🚀 Formulaire soumis:', formData)
     setIsSubmitting(true)
     setSubmitStatus('idle')
     
     try {
+      // Exécuter reCAPTCHA v3 avant validation
+      console.log('🔐 Exécution de reCAPTCHA v3...')
+      const recaptchaToken = await executeReCaptcha('contact_form')
+      
+      if (!recaptchaToken) {
+        throw new Error('Échec de la vérification de sécurité')
+      }
+
+      // Ajouter le token au formData
+      const dataWithRecaptcha = { ...formData, recaptchaToken }
+      
       // Validation avec Zod
-      const validatedData = inquirySchema.parse(formData)
+      console.log('🔍 Validation des données...')
+      const validatedData = inquirySchema.parse(dataWithRecaptcha)
+      console.log('✅ Données validées:', validatedData)
       
       // Vérification honeypot
       if (validatedData.honeypot) {
         throw new Error('Spam détecté')
       }
       
+      console.log('📡 Envoi de la requête vers /api/inquiries...')
       const response = await fetch('/api/inquiries', {
         method: 'POST',
         headers: {
@@ -55,10 +92,16 @@ export default function ContactForm() {
         body: JSON.stringify(validatedData),
       })
       
+      console.log('📨 Réponse reçue:', response.status, response.statusText)
+      
       if (!response.ok) {
         const errorData = await response.json()
+        console.error('❌ Erreur API:', errorData)
         throw new Error(errorData.error || 'Erreur lors de l\'envoi')
       }
+      
+      const successData = await response.json()
+      console.log('✅ Succès API:', successData)
       
       setSubmitStatus('success')
       setFormData({
@@ -68,28 +111,35 @@ export default function ContactForm() {
         budget: undefined,
         message: '',
         consent: false,
-        honeypot: ''
+        honeypot: '',
+        recaptchaToken: ''
       })
       
     } catch (error) {
+      console.error('❌ Erreur dans handleSubmit:', error)
       if (error instanceof Error) {
         if (error.message.includes('Spam détecté')) {
+          console.log('🚫 Spam détecté')
           setSubmitStatus('error')
         } else {
           // Validation errors
+          console.log('🔍 Erreur de validation:', error)
           const zodError = error as any
           if (zodError.errors) {
             const fieldErrors: Partial<InquiryFormData> = {}
             zodError.errors.forEach((err: any) => {
               fieldErrors[err.path[0] as keyof InquiryFormData] = err.message
             })
+            console.log('📝 Erreurs de champs:', fieldErrors)
             setErrors(fieldErrors)
           } else {
+            console.log('📝 Erreur générale:', error.message)
             setErrors({ message: error.message })
           }
         }
       }
     } finally {
+      console.log('🏁 Fin de soumission, isSubmitting = false')
       setIsSubmitting(false)
     }
   }
@@ -229,6 +279,13 @@ export default function ContactForm() {
       </div>
       {errors.consent && (
         <p className="mt-1 text-sm text-red-600">{errors.consent}</p>
+      )}
+
+      {/* reCAPTCHA v3 est invisible - pas besoin d'interface utilisateur */}
+      {errors.recaptchaToken && (
+        <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-sm text-red-600">{errors.recaptchaToken}</p>
+        </div>
       )}
 
       {/* Messages de statut */}

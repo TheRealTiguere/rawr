@@ -8,6 +8,7 @@ export const inquirySchema = z.object({
   message: z.string().min(10, 'Le message doit contenir au moins 10 caractères').max(1000, 'Le message ne peut pas dépasser 1000 caractères').trim(),
   consent: z.boolean().refine(val => val === true, 'Vous devez accepter les conditions'),
   honeypot: z.string().max(0, 'Spam détecté').optional(),
+  recaptchaToken: z.string().min(1, 'Vérification de sécurité requise').optional(),
 })
 
 export const loginSchema = z.object({
