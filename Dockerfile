@@ -1,5 +1,5 @@
 # Dockerfile pour l'application RAWRAGENCY
-FROM node:20-alpine AS base
+FROM node:18-alpine AS base
 
 # Installer les dépendances nécessaires
 RUN apk add --no-cache libc6-compat
@@ -24,7 +24,7 @@ COPY . .
 RUN npm run build
 
 # Image de production
-FROM node:20-alpine AS runner
+FROM node:18-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV production

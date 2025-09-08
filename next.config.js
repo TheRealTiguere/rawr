@@ -4,6 +4,10 @@ const nextConfig = {
     serverComponentsExternalPackages: ['@prisma/client']
   },
   
+  // Optimisations SEO et performances
+  compress: true,
+  poweredByHeader: false,
+  
   // Images optimization
   images: {
     formats: ['image/webp', 'image/avif'],
