@@ -35,18 +35,27 @@ export default function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    console.log('🔍 [DEBUG CLIENT] Début de la soumission du formulaire')
+    console.log('🔍 [DEBUG CLIENT] Données du formulaire:', JSON.stringify(formData, null, 2))
+    
     setIsSubmitting(true)
     setSubmitStatus('idle')
     
     try {
       // Validation avec Zod
+      console.log('🔍 [DEBUG CLIENT] Validation avec Zod...')
       const validatedData = inquirySchema.parse(formData)
+      console.log('✅ [DEBUG CLIENT] Données validées:', JSON.stringify(validatedData, null, 2))
       
       // Vérification honeypot
+      console.log('🔍 [DEBUG CLIENT] Vérification honeypot...')
       if (validatedData.honeypot) {
+        console.log('🚫 [DEBUG CLIENT] Spam détecté - honeypot rempli')
         throw new Error('Spam détecté')
       }
+      console.log('✅ [DEBUG CLIENT] Honeypot vide - pas de spam')
       
+      console.log('🔍 [DEBUG CLIENT] Envoi de la requête à /api/inquiries...')
       const response = await fetch('/api/inquiries', {
         method: 'POST',
         headers: {
@@ -55,10 +64,20 @@ export default function ContactForm() {
         body: JSON.stringify(validatedData),
       })
       
+      console.log('📡 [DEBUG CLIENT] Réponse reçue:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok
+      })
+      
       if (!response.ok) {
         const errorData = await response.json()
+        console.error('❌ [DEBUG CLIENT] Erreur de réponse:', errorData)
         throw new Error(errorData.error || 'Erreur lors de l\'envoi')
       }
+      
+      const responseData = await response.json()
+      console.log('✅ [DEBUG CLIENT] Réponse de succès:', responseData)
       
       setSubmitStatus('success')
       setFormData({
@@ -72,24 +91,30 @@ export default function ContactForm() {
       })
       
     } catch (error) {
+      console.error('❌ [DEBUG CLIENT] Erreur lors de la soumission:', error)
+      
       if (error instanceof Error) {
         if (error.message.includes('Spam détecté')) {
+          console.log('🚫 [DEBUG CLIENT] Spam détecté - statut error')
           setSubmitStatus('error')
         } else {
           // Validation errors
           const zodError = error as any
           if (zodError.errors) {
+            console.log('❌ [DEBUG CLIENT] Erreurs de validation Zod:', zodError.errors)
             const fieldErrors: Partial<InquiryFormData> = {}
             zodError.errors.forEach((err: any) => {
               fieldErrors[err.path[0] as keyof InquiryFormData] = err.message
             })
             setErrors(fieldErrors)
           } else {
+            console.log('❌ [DEBUG CLIENT] Erreur générale:', error.message)
             setErrors({ message: error.message })
           }
         }
       }
     } finally {
+      console.log('🔍 [DEBUG CLIENT] Fin de la soumission - isSubmitting = false')
       setIsSubmitting(false)
     }
   }

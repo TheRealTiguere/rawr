@@ -12,7 +12,18 @@ const transporter = nodemailer.createTransport({
 })
 
 export async function sendInquiryNotification(inquiry: InquiryFormData) {
+  console.log('📧 [DEBUG] Début de l\'envoi d\'email de notification')
+  console.log('📧 [DEBUG] Données de l\'inquiry:', JSON.stringify(inquiry, null, 2))
+  
   const toEmail = process.env.TO_EMAIL || 'contact@rawragency.fr'
+  console.log('📧 [DEBUG] Email de destination:', toEmail)
+  
+  // Vérifier la configuration SMTP
+  console.log('📧 [DEBUG] Configuration SMTP:')
+  console.log('📧 [DEBUG] - SMTP_HOST:', process.env.SMTP_HOST || 'arolle.o2switch.net')
+  console.log('📧 [DEBUG] - SMTP_PORT:', process.env.SMTP_PORT || '465')
+  console.log('📧 [DEBUG] - SMTP_USER:', process.env.SMTP_USER ? 'Configuré' : 'Non configuré')
+  console.log('📧 [DEBUG] - SMTP_PASS:', process.env.SMTP_PASS ? 'Configuré' : 'Non configuré')
   
   const mailOptions = {
     from: process.env.SMTP_USER,
@@ -29,12 +40,27 @@ export async function sendInquiryNotification(inquiry: InquiryFormData) {
       <p><small>Envoyé le ${new Date().toLocaleString('fr-FR')}</small></p>
     `,
   }
+  
+  console.log('📧 [DEBUG] Options d\'email:', {
+    from: mailOptions.from,
+    to: mailOptions.to,
+    subject: mailOptions.subject
+  })
 
   try {
-    await transporter.sendMail(mailOptions)
-    return { success: true }
+    console.log('📧 [DEBUG] Tentative d\'envoi de l\'email...')
+    const result = await transporter.sendMail(mailOptions)
+    console.log('✅ [DEBUG] Email envoyé avec succès:', result.messageId)
+    return { success: true, messageId: result.messageId }
   } catch (error) {
-    console.error('Erreur envoi email:', error)
+    console.error('❌ [DEBUG] Erreur envoi email:', error)
+    console.error('❌ [DEBUG] Détails de l\'erreur:', {
+      name: error instanceof Error ? error.name : 'Unknown',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      code: (error as any)?.code,
+      responseCode: (error as any)?.responseCode,
+      command: (error as any)?.command
+    })
     return { success: false, error: error instanceof Error ? error.message : 'Erreur inconnue' }
   }
 }
