@@ -27,7 +27,7 @@ export default function Services() {
   ];
 
   return (
-    <section id="services" className="py-8 relative overflow-hidden scroll-mt-40">
+    <section id="services" className="py-8 relative overflow-hidden scroll-mt-28">
       
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         {/* Header */}

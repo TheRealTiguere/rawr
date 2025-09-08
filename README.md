@@ -1,149 +1,289 @@
-# 🦾 RAWRAGENCY - Agence Web Moderne
+# RAWRAGENCY - Site Vitrine Agence Web
 
-Site vitrine professionnel avec design glassmorphism, background bokeh animé et système de contact intégré.
+Site vitrine moderne pour agence web avec back-office d'administration et capture de leads.
 
-## 🚀 **Technologies**
+## 🚀 Technologies
 
-- **Next.js 14** + TypeScript + TailwindCSS
-- **Prisma ORM** + SQLite (dev) / PostgreSQL (prod)
-- **Authentification JWT** sécurisée
-- **Email SMTP** avec Nodemailer
-- **Déploiement** Docker + Vercel ready
+- **Frontend**: Next.js 14, TypeScript, TailwindCSS
+- **Backend**: API Routes Next.js, Prisma ORM
+- **Base de données**: PostgreSQL
+- **Authentification**: JWT avec cookies httpOnly
+- **Validation**: Zod
+- **Email**: Nodemailer (SMTP) ou Resend
+- **Déploiement**: Docker, Docker Compose, Vercel
 
-## ✨ **Fonctionnalités**
+## ✨ Fonctionnalités
 
-- 🎨 **Design moderne** : Glassmorphism + background bokeh animé
-- 📱 **Responsive** : Mobile-first, optimisé tous écrans
-- 📧 **Contact intégré** : Formulaire avec envoi SMTP
-- 🛡️ **Sécurisé** : Validation Zod, anti-spam, variables env
-- 👤 **Admin dashboard** : Gestion des demandes, export CSV
-- 🚀 **Performance** : Optimisé Lighthouse, animations fluides
+- 🎨 Design moderne style ChatGPT (gradients radiaux pastel + grain)
+- 📱 Interface responsive (≥375px)
+- 🔐 Authentification admin sécurisée
+- 📝 Formulaire de contact avec validation
+- 🛡️ Protection anti-spam (honeypot)
+- 📊 Back-office complet avec gestion des demandes
+- 📈 Export CSV des données
+- 📧 Notifications email automatiques
+- 🚀 Performance optimisée (Lighthouse ≥90)
 
-## 🛠️ **Installation Rapide**
+## 📋 Prérequis
 
-### 1️⃣ **Setup automatique** (Windows)
+- Node.js 18+ 
+- npm ou yarn
+- PostgreSQL
+- Docker & Docker Compose (optionnel)
+
+## 🛠️ Installation Locale
+
+### 1. Cloner le projet
+
 ```bash
-git clone https://github.com/TheRealTiguere/rawr.git
-cd rawr
-./scripts/setup-dev.ps1
+git clone <votre-repo>
+cd rawragency
 ```
 
-### 2️⃣ **Setup manuel**
+### 2. Installer les dépendances
+
 ```bash
-# Installation
 npm install
+```
 
-# Configuration
-copy env.example .env.local
-# ⚠️ Modifiez .env.local avec vos paramètres SMTP
+### 3. Configuration de l'environnement
 
+```bash
+cp env.example .env.local
+```
+
+Éditer `.env.local` avec vos valeurs :
+
+```env
 # Base de données
-npx prisma db push
-npx prisma generate
+DATABASE_URL="postgresql://username:password@localhost:5432/rawragency"
 
-# Lancement
+# JWT (générer une clé sécurisée)
+JWT_SECRET="votre-cle-jwt-secrete"
+
+# SMTP
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT="587"
+SMTP_USER="votre-email@gmail.com"
+SMTP_PASS="votre-mot-de-passe-app"
+TO_EMAIL="admin@agence.com"
+```
+
+### 4. Base de données
+
+```bash
+# Générer le client Prisma
+npm run db:generate
+
+# Créer la base et appliquer les migrations
+npm run db:push
+
+# Ou avec migrations
+npm run db:migrate
+
+# Créer l'utilisateur admin
+npm run db:seed
+```
+
+### 5. Lancer l'application
+
+```bash
 npm run dev
 ```
 
-## 📧 **Configuration Email**
+L'application sera accessible sur [http://localhost:3000](http://localhost:3000)
 
-Dans `.env.local` :
-```env
-# SMTP Configuration
-SMTP_HOST="arolle.o2switch.net"
-SMTP_PORT="465"
-SMTP_USER="contact@rawragency.fr"
-SMTP_PASS="votre-mot-de-passe"
-TO_EMAIL="contact@rawragency.fr"
-```
+## 🐳 Installation avec Docker
 
-> 📖 Guide complet : `EMAIL-SETUP.md`
+### 1. Cloner et configurer
 
-## 🎯 **Structure du Projet**
-
-```
-├── app/                    # Pages Next.js 14
-│   ├── api/               # API Routes
-│   ├── admin/             # Dashboard admin
-│   └── globals.css        # Styles globaux + animations
-├── components/            # Composants React
-├── lib/                   # Utilitaires (auth, email, db)
-├── prisma/               # Schéma base de données
-├── public/               # Assets statiques
-└── scripts/              # Scripts d'automatisation
-```
-
-## 🚀 **Déploiement**
-
-### **Vercel** (Recommandé)
 ```bash
-# Push sur GitHub puis connecter à Vercel
-# Variables d'environnement à configurer :
-DATABASE_URL=postgresql://...
-SMTP_HOST=arolle.o2switch.net
-SMTP_PORT=465
-SMTP_USER=contact@rawragency.fr
-SMTP_PASS=***
+git clone <votre-repo>
+cd rawragency
+cp env.example .env
+# Éditer .env avec vos valeurs
 ```
 
-### **Docker**
-```bash
-# Production
-docker-compose -f docker-compose.prod.yml up -d
+### 2. Lancer avec Docker Compose
 
+```bash
+# Construire et démarrer
+docker-compose up --build
+
+# En arrière-plan
+docker-compose up -d --build
+```
+
+### 3. Initialiser la base de données
+
+```bash
+# Dans un autre terminal
+docker-compose exec app npm run db:generate
+docker-compose exec app npm run db:push
+docker-compose exec app npm run db:seed
+```
+
+## 🔐 Accès Admin
+
+- **URL**: `/admin` ou `/login`
+- **Email**: `admin@agence.com`
+- **Mot de passe**: `admin123`
+
+⚠️ **Important**: Changez ces identifiants en production !
+
+## 📊 Scripts Disponibles
+
+```bash
 # Développement
-docker-compose up -d
-```
-
-## 🔧 **Scripts Disponibles**
-
-```bash
-npm run dev          # Serveur de développement
-npm run build        # Build production
-npm run start        # Serveur production
-npm run lint         # Linting ESLint
+npm run dev          # Lancer en mode dev
+npm run build        # Build de production
+npm run start        # Lancer en mode production
+npm run lint         # Vérifier le code
+npm run type-check   # Vérifier les types TypeScript
 
 # Base de données
-npm run db:generate  # Générer client Prisma
-npm run db:push      # Pousser schéma
-npm run db:studio    # Interface Prisma Studio
-
-# Scripts PowerShell
-./scripts/setup-dev.ps1   # Configuration automatique
-./scripts/clean.ps1       # Nettoyage projet
-./scripts/deploy.ps1      # Déploiement production
+npm run db:generate  # Générer le client Prisma
+npm run db:push      # Appliquer le schéma
+npm run db:migrate   # Exécuter les migrations
+npm run db:seed      # Créer l'admin
+npm run db:studio    # Ouvrir Prisma Studio
 ```
 
-## 🛡️ **Sécurité**
+## 🚀 Déploiement
 
-- ✅ Variables d'environnement protégées
-- ✅ Validation stricte avec Zod
-- ✅ Protection anti-spam honeypot
-- ✅ JWT httpOnly cookies
-- ✅ Rate limiting API
-- ✅ Headers sécurisés
+### Vercel (Recommandé)
 
-> 📖 Guide sécurité : `SECURITY.md`
+1. **Connecter votre repo GitHub** à Vercel
+2. **Configurer les variables d'environnement** :
+   - `DATABASE_URL`
+   - `JWT_SECRET`
+   - `SMTP_*` ou `RESEND_API_KEY`
+3. **Déployer automatiquement** à chaque push
 
-## 🎨 **Design System**
+### Docker Production
 
-### **Couleurs**
-- **Background** : Bokeh animé (bleu, violet, orange, rouge)
-- **Accents** : Ambre/Orange (#f59e0b → #ea580c)
-- **Glassmorphism** : `bg-white/10 backdrop-blur-md`
+```bash
+# Build de l'image
+docker build -t rawragency .
 
-### **Animations**
-- **Background** : Bokeh flottant (35s cycle)
-- **Interactions** : Hover effects, transitions fluides
-- **Performance** : `will-change`, `transform3d`
+# Lancer avec variables d'env
+docker run -d \
+  -p 3000:3000 \
+  -e DATABASE_URL="..." \
+  -e JWT_SECRET="..." \
+  rawragency
+```
 
-## 📞 **Support**
+### Base de données Production
 
-- **Email** : contact@rawragency.fr
-- **Documentation** : Fichiers `*.md` du projet
-- **Issues** : GitHub Issues
+- **PostgreSQL** : AWS RDS, Google Cloud SQL, ou service managé
+- **Variables d'environnement** : Configurer `DATABASE_URL`
+- **Migrations** : Exécuter `npm run db:migrate` après déploiement
+
+## 🔧 Configuration Avancée
+
+### Email
+
+#### SMTP (Gmail)
+```env
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT="587"
+SMTP_USER="votre-email@gmail.com"
+SMTP_PASS="mot-de-passe-app-gmail"
+```
+
+#### Resend (Alternative)
+```env
+RESEND_API_KEY="votre-cle-api-resend"
+```
+
+### hCaptcha (Optionnel)
+
+```env
+HCAPTCHA_SECRET_KEY="votre-cle-secrete"
+HCAPTCHA_SITE_KEY="votre-cle-site"
+```
+
+### Performance
+
+- **Images** : Optimisées avec Next.js Image
+- **CSS** : Purge automatique avec TailwindCSS
+- **Bundle** : Analyse avec `npm run build`
+
+## 🧪 Tests
+
+```bash
+# Linting
+npm run lint
+
+# Vérification des types
+npm run type-check
+
+# Build de test
+npm run build
+```
+
+## 📁 Structure du Projet
+
+```
+rawragency/
+├── app/                    # App Router Next.js 14
+│   ├── api/               # Routes API
+│   ├── admin/             # Page admin
+│   ├── login/             # Page login
+│   ├── legal/             # Mentions légales
+│   ├── privacy/           # Politique confidentialité
+│   └── page.tsx           # Page d'accueil
+├── components/             # Composants React
+├── lib/                   # Utilitaires et config
+├── prisma/                # Schéma et migrations DB
+├── public/                # Assets statiques
+├── Dockerfile             # Image Docker
+├── docker-compose.yml     # Orchestration Docker
+└── README.md              # Documentation
+```
+
+## 🔒 Sécurité
+
+- **JWT** : Cookies httpOnly sécurisés
+- **Middleware** : Protection des routes sensibles
+- **Validation** : Zod pour tous les inputs
+- **Anti-spam** : Honeypot + rate limiting
+- **CORS** : Configuration sécurisée
+- **Headers** : Sécurité renforcée
+
+## 📈 Monitoring & Maintenance
+
+- **Logs** : Console + fichiers de log
+- **Health Check** : `/api/health` (à implémenter)
+- **Backup DB** : Automatiser avec cron
+- **Updates** : Dependencies + sécurité
+
+## 🤝 Contribution
+
+1. Fork le projet
+2. Créer une branche feature (`git checkout -b feature/AmazingFeature`)
+3. Commit les changements (`git commit -m 'Add AmazingFeature'`)
+4. Push vers la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrir une Pull Request
+
+## 📄 Licence
+
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
+
+## 🆘 Support
+
+- **Issues** : [GitHub Issues](https://github.com/votre-repo/issues)
+- **Email** : support@rawragency.com
+- **Documentation** : [Wiki du projet](https://github.com/votre-repo/wiki)
+
+## 🙏 Remerciements
+
+- Next.js Team pour l'excellent framework
+- Prisma pour l'ORM moderne
+- TailwindCSS pour l'utilitaire CSS
+- La communauté open source
 
 ---
 
-**Made with ❤️ by RAWRAGENCY**  
-*Votre présence digitale exceptionnelle*
+**RAWRAGENCY** - Transformons vos idées en expériences digitales exceptionnelles 🚀

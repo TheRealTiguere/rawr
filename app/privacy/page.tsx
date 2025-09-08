@@ -1,14 +1,3 @@
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'Politique de Confidentialité',
-  description: 'Politique de confidentialité de RAWRAGENCY. Découvrez comment nous protégeons vos données personnelles et respectons votre vie privée.',
-  robots: {
-    index: true,
-    follow: true,
-  },
-}
-
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-white">

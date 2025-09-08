@@ -1,14 +1,3 @@
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'Mentions Légales',
-  description: 'Mentions légales de RAWRAGENCY - Agence web créative. Informations légales, conditions d\'utilisation et politique de confidentialité.',
-  robots: {
-    index: true,
-    follow: true,
-  },
-}
-
 export default function LegalPage() {
   return (
     <div className="min-h-screen bg-white">

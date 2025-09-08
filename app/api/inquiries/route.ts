@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { inquirySchema } from '@/lib/validations'
 import { prisma } from '@/lib/prisma'
 import { sendInquiryNotification } from '@/lib/email'
-import { verifyReCaptcha } from '@/lib/recaptcha'
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,21 +13,6 @@ export async function POST(request: NextRequest) {
     // Vérification honeypot
     if (validatedData.honeypot) {
       return NextResponse.json({ error: 'Spam détecté' }, { status: 400 })
-    }
-    
-    // Vérification reCAPTCHA v3
-    if (validatedData.recaptchaToken) {
-      console.log('🔐 Vérification reCAPTCHA v3...')
-      const captchaResult = await verifyReCaptcha(validatedData.recaptchaToken, 0.5)
-      if (!captchaResult.success) {
-        console.error('❌ Échec vérification reCAPTCHA:', captchaResult.error)
-        return NextResponse.json({ 
-          error: captchaResult.error || 'Vérification de sécurité échouée' 
-        }, { status: 400 })
-      }
-      console.log(`✅ reCAPTCHA vérifié avec succès (score: ${captchaResult.score})`)
-    } else {
-      console.log('⚠️ Pas de token reCAPTCHA fourni')
     }
     
     // Création de la demande
@@ -43,21 +27,8 @@ export async function POST(request: NextRequest) {
     })
     
     // Envoi de l'email de notification
-    console.log('📧 Tentative d\'envoi d\'email de notification...')
-    const emailResult = await sendInquiryNotification(validatedData)
+    await sendInquiryNotification(validatedData)
     
-    if (!emailResult.success) {
-      console.error('❌ Échec envoi email:', emailResult.error)
-      // La demande est sauvée mais l'email a échoué
-      return NextResponse.json({ 
-        success: true, 
-        message: 'Votre demande a été sauvegardée, mais l\'email de notification a échoué.',
-        id: inquiry.id,
-        emailError: emailResult.error
-      })
-    }
-    
-    console.log('✅ Email envoyé avec succès')
     return NextResponse.json({ 
       success: true, 
       message: 'Votre demande a été envoyée avec succès !',
