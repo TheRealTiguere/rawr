@@ -22,13 +22,6 @@ export default function Navigation() {
     { href: '#contact', label: 'Contact' }
   ];
 
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  };
-
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
       isScrolled 
@@ -38,11 +31,7 @@ export default function Navigation() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-28">
           {/* Logo RAWR - Image */}
-          <button 
-            onClick={scrollToTop}
-            className="flex items-center group cursor-pointer"
-            aria-label="Retour en haut de la page"
-          >
+          <Link href="/" className="flex items-center group">
             <div className="relative group-hover:scale-110 transition-transform duration-300">
               <img 
                 src="/logo-rawr.png" 
@@ -67,7 +56,7 @@ export default function Navigation() {
                 RAWR
               </div>
             </div>
-          </button>
+          </Link>
 
           {/* Navigation desktop */}
           <div className="hidden md:flex items-center space-x-8">
