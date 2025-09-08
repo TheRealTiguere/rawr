@@ -35,8 +35,6 @@ export default function AdminDashboard() {
   })
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
-  const [debugInfo, setDebugInfo] = useState<any>(null)
-  const [isTestingEmail, setIsTestingEmail] = useState(false)
   
   const router = useRouter()
 
@@ -137,34 +135,6 @@ export default function AdminDashboard() {
     }
   }
 
-  // Tester la configuration email
-  const testEmailConfig = async () => {
-    setIsTestingEmail(true)
-    try {
-      const response = await fetch('/api/test-email')
-      const data = await response.json()
-      setDebugInfo(data)
-    } catch (err) {
-      setDebugInfo({ success: false, error: 'Erreur lors du test' })
-    } finally {
-      setIsTestingEmail(false)
-    }
-  }
-
-  // Envoyer un email de test
-  const sendTestEmail = async () => {
-    setIsTestingEmail(true)
-    try {
-      const response = await fetch('/api/test-email', { method: 'POST' })
-      const data = await response.json()
-      setDebugInfo(data)
-    } catch (err) {
-      setDebugInfo({ success: false, error: 'Erreur lors de l\'envoi du test' })
-    } finally {
-      setIsTestingEmail(false)
-    }
-  }
-
   const getStatusColor = (status: Inquiry['status']) => {
     switch (status) {
       case 'NOUVEAU': return 'bg-blue-100 text-blue-800'
@@ -202,20 +172,6 @@ export default function AdminDashboard() {
         </div>
         
         <div className="flex flex-col sm:flex-row gap-3">
-          <button
-            onClick={testEmailConfig}
-            disabled={isTestingEmail}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-lg transition-colors"
-          >
-            {isTestingEmail ? '⏳ Test...' : '🔧 Test Config Email'}
-          </button>
-          <button
-            onClick={sendTestEmail}
-            disabled={isTestingEmail}
-            className="px-4 py-2 bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white rounded-lg transition-colors"
-          >
-            {isTestingEmail ? '⏳ Envoi...' : '📧 Envoyer Test Email'}
-          </button>
           <button
             onClick={exportCSV}
             className="btn-secondary"
@@ -269,40 +225,6 @@ export default function AdminDashboard() {
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
           <p className="text-red-800">{error}</p>
-        </div>
-      )}
-
-      {/* Section Debug Email */}
-      {debugInfo && (
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">🔧 Debug Email</h3>
-          <div className="space-y-4">
-            <div className={`p-4 rounded-lg ${debugInfo.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
-              <p className={`font-medium ${debugInfo.success ? 'text-green-800' : 'text-red-800'}`}>
-                {debugInfo.success ? '✅ Succès' : '❌ Erreur'}
-              </p>
-              <p className={`text-sm ${debugInfo.success ? 'text-green-700' : 'text-red-700'}`}>
-                {debugInfo.message || debugInfo.error}
-              </p>
-            </div>
-            
-            {debugInfo.config && (
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-medium text-gray-900 mb-2">Configuration actuelle :</h4>
-                <pre className="text-sm text-gray-700 overflow-x-auto">
-                  {JSON.stringify(debugInfo.config, null, 2)}
-                </pre>
-              </div>
-            )}
-            
-            {debugInfo.messageId && (
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <p className="text-sm text-blue-800">
-                  <strong>Message ID :</strong> {debugInfo.messageId}
-                </p>
-              </div>
-            )}
-          </div>
         </div>
       )}
 
