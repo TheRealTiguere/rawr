@@ -1,11 +1,8 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import './globals.css'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import { ReCaptchaProvider } from '@/components/ReCaptcha'
-
-const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: {
@@ -88,6 +85,9 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#f59e0b" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -95,7 +95,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="RAWRAGENCY" />
         <link rel="apple-touch-icon" href="/logo-rawr.png" />
       </head>
-      <body className={`${inter.className} min-h-screen gradient-bg grain`}>
+      <body className="font-sans min-h-screen gradient-bg grain">
         <ReCaptchaProvider>
           <Navigation />
           <main className="pt-28">
