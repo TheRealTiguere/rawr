@@ -5,6 +5,11 @@ import { sendInquiryNotification } from '@/lib/email'
 
 export async function POST(request: NextRequest) {
   try {
+    // Vérifier la connexion à la base de données
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json({ error: 'Base de données non configurée' }, { status: 500 })
+    }
+
     const body = await request.json()
     
     // Validation avec Zod
@@ -36,6 +41,7 @@ export async function POST(request: NextRequest) {
     })
     
   } catch (error) {
+    console.error('Erreur API POST /api/inquiries:', error)
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
@@ -45,6 +51,11 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    // Vérifier la connexion à la base de données
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json({ error: 'Base de données non configurée' }, { status: 500 })
+    }
+
     const { searchParams } = new URL(request.url)
     const format = searchParams.get('format')
     
@@ -107,7 +118,7 @@ export async function GET(request: NextRequest) {
     })
     
   } catch (error) {
-    console.error('Erreur récupération demandes:', error)
+    console.error('Erreur API GET /api/inquiries:', error)
     return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
   }
 }

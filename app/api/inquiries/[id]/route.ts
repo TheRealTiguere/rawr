@@ -6,6 +6,11 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Vérifier la connexion à la base de données
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json({ error: 'Base de données non configurée' }, { status: 500 })
+    }
+
     const { id } = params
     const body = await request.json()
     
@@ -25,6 +30,7 @@ export async function PATCH(
     })
     
   } catch (error) {
+    console.error('Erreur API PATCH /api/inquiries/[id]:', error)
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
@@ -37,6 +43,11 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Vérifier la connexion à la base de données
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json({ error: 'Base de données non configurée' }, { status: 500 })
+    }
+
     const { id } = params
     
     await prisma.inquiry.delete({
@@ -49,6 +60,7 @@ export async function DELETE(
     })
     
   } catch (error) {
+    console.error('Erreur API DELETE /api/inquiries/[id]:', error)
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
