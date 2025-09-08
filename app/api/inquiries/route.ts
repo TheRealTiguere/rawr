@@ -25,8 +25,8 @@ export async function POST(request: NextRequest) {
       data: {
         name: validatedData.name,
         email: validatedData.email,
-        phone: validatedData.phone,
-        budget: validatedData.budget,
+        phone: validatedData.phone || null,
+        budget: validatedData.budget || null,
         message: validatedData.message,
       },
     })

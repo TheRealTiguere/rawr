@@ -8,7 +8,7 @@ export default function ContactForm() {
     name: '',
     email: '',
     phone: '',
-    budget: undefined,
+    budget: '',
     message: '',
     consent: false,
     honeypot: ''
@@ -65,7 +65,7 @@ export default function ContactForm() {
         name: '',
         email: '',
         phone: '',
-        budget: undefined,
+        budget: '',
         message: '',
         consent: false,
         honeypot: ''
