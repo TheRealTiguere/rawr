@@ -20,8 +20,7 @@ export default function Footer() {
 
   const socialLinks = [
     { icon: "💼", label: "LinkedIn", href: "#" },
-    { icon: "📷", label: "Instagram", href: "#" },
-    { icon: "🐦", label: "Twitter", href: "#" }
+    { icon: "📷", label: "Instagram", href: "#" }
   ];
 
   return (
@@ -105,6 +104,13 @@ export default function Footer() {
                 <span className="text-amber-400">📧</span>
                 <span className="ml-2">contact@rawragency.fr</span>
               </div>
+              <a 
+                href="tel:+33972174595" 
+                className="text-gray-300 hover:text-white transition-colors duration-300 cursor-pointer flex items-center"
+              >
+                <span className="text-amber-400">📞</span>
+                <span className="ml-2">09 72 17 45 95</span>
+              </a>
             </div>
           </div>
         </div>

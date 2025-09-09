@@ -3,35 +3,29 @@ export default function Services() {
     {
       icon: "🌐",
       title: "Sites Vitrine",
-      description: "Sites web élégants pour présenter votre entreprise",
-      features: ["Design responsive", "SEO optimisé", "Performance rapide", "Contenu dynamique"]
+      description: "Des sites élégants et modernes pour mettre en valeur ton entreprise.",
+      features: ["S'adapte à tous les écrans (ordinateur, tablette, mobile)", "Visible sur Google grâce à un bon référencement", "Rapide et fluide"]
     },
     {
       icon: "🛒",
       title: "Site E-commerce",
-      description: "Boutiques en ligne qui convertissent vos visiteurs",
-      features: ["Paiement sécurisé", "Gestion des stocks", "Panier optimisé", "Analytics ventes"]
+      description: "Des boutiques en ligne qui donnent envie d'acheter.",
+      features: ["Paiement en ligne simple et sécurisé", "Suivi automatique de ton stock", "Panier pratique et facile à utiliser", "Statistiques pour suivre tes ventes"]
     },
     {
       icon: "☁️",
-      title: "SaaS",
-      description: "Applications web comme service sur mesure",
-      features: ["Architecture cloud", "Abonnements", "API robuste", "Scalabilité"]
-    },
-    {
-      icon: "📱",
-      title: "Applications Mobiles",
-      description: "Apps natives et cross-platform performantes",
-      features: ["iOS & Android", "React Native", "Push notifications", "Synchronisation"]
+      title: "SaaS (Application sur mesure)",
+      description: "Des applications web créées spécialement pour ton activité.",
+      features: ["Hébergement moderne et fiable", "Gestion des abonnements simplifiée", "S'adapte facilement à ta croissance"]
     }
   ];
 
   return (
-    <section id="services" className="py-8 relative overflow-hidden scroll-mt-28">
+    <section id="services" className="py-16 relative overflow-hidden scroll-mt-28">
       
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Nos <span className="text-gradient">services</span>
           </h2>
@@ -42,7 +36,7 @@ export default function Services() {
         </div>
 
         {/* Grille des services */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {services.map((service, index) => (
             <div
               key={index}

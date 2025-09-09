@@ -31,13 +31,24 @@ export default function Hero() {
         </p>
         
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-4">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
           <Link href="#contact" className="btn-primary">
             Demander un devis
           </Link>
           <Link href="#portfolio" className="btn-secondary">
             Voir nos réalisations
           </Link>
+        </div>
+
+        {/* Numéro de téléphone */}
+        <div className="mb-8">
+          <a 
+            href="tel:+33972174595" 
+            className="inline-flex items-center px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-white/20 transition-all duration-300 cursor-pointer"
+          >
+            <span className="text-amber-400 mr-3">📞</span>
+            <span className="font-medium">09 72 17 45 95</span>
+          </a>
         </div>
         
         {/* Stats */}
@@ -58,7 +69,7 @@ export default function Hero() {
       </div>
       
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden md:block">
         <div className="w-6 h-10 border-2 border-gray-500 rounded-full flex justify-center">
           <div className="w-1 h-3 bg-gray-400 rounded-full mt-2"></div>
         </div>

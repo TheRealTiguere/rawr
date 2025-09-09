@@ -2,6 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Masquer la scrollbar pour le carrousel */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Animation shimmer pour la barre de progression */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
 /* ChatGPT Dark Theme - Updated */
 
 /* Variables CSS pour les couleurs bokeh */

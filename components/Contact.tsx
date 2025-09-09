@@ -11,6 +11,12 @@ export default function Contact() {
       link: "mailto:contact@rawragency.fr"
     },
     {
+      icon: "📞",
+      title: "Téléphone",
+      content: "09 72 17 45 95",
+      link: "tel:+33972174595"
+    },
+    {
       icon: "⏰",
       title: "Disponibilité",
       content: "Réponse sous 24h"
