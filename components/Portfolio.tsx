@@ -40,16 +40,14 @@ export default function Portfolio() {
       category: "Site Vitrine",
       description: "Site web moderne pour une entreprise de location de véhicules avec système de réservation en ligne et présentation de la flotte.",
       image: "/images/portfolio/safeloc-location.png",
-      technologies: ["WordPress", "PHP", "JavaScript", "CSS3"],
-      link: "#"
+      technologies: ["WordPress", "PHP", "JavaScript", "CSS3"]
     },
     {
       title: "GM Auto Ecole - Site vitrine",
       category: "Site Vitrine",
       description: "Site vitrine professionnel pour une auto-école avec présentation des formations, tarifs et formulaire de contact.",
       image: "/images/portfolio/gm-auto-ecole.png",
-      technologies: ["WordPress", "PHP", "JavaScript", "CSS3"],
-      link: "#"
+      technologies: ["WordPress", "PHP", "JavaScript", "CSS3"]
     }
   ];
 
