@@ -95,14 +95,12 @@ export default function RootLayout({
     <html lang="fr">
       <head>
         <StructuredData />
-      </head>
-      <body className={`${inter.className} min-h-screen gradient-bg grain`}>
         {/* Google tag (gtag.js) */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=AW-17431974294"
-          strategy="afterInteractive"
+          strategy="beforeInteractive"
         />
-        <Script id="google-analytics" strategy="afterInteractive">
+        <Script id="google-analytics" strategy="beforeInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
@@ -110,7 +108,8 @@ export default function RootLayout({
             gtag('config', 'AW-17431974294');
           `}
         </Script>
-        
+      </head>
+      <body className={`${inter.className} min-h-screen gradient-bg grain`}>
         <Navigation />
         <main className="pt-28">
           {children}
