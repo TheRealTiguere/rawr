@@ -2,11 +2,22 @@
 
 import { useState, useRef } from 'react'
 
+interface Project {
+  title: string
+  category: string
+  description: string
+  image: string
+  technologies: string[]
+  link: string | null
+  featured?: boolean
+  inProgress?: boolean
+}
+
 export default function Portfolio() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   
-  const completedProjects = [
+  const completedProjects: Project[] = [
     {
       title: "AMS Global Services - Boutique E-commerce",
       category: "E-commerce",
@@ -42,7 +53,7 @@ export default function Portfolio() {
     }
   ];
 
-  const inProgressProject = {
+  const inProgressProject: Project = {
     title: "Application SaaS - Projet en cours",
     category: "SaaS",
     description: "Application web innovante pour la gestion d'entreprise avec tableau de bord interactif, analytics avancés et intégrations API.",
