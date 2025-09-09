@@ -25,7 +25,7 @@ export default function Services() {
       
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         {/* Header */}
-        <div className="text-center mb-12">
+        <header className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Nos <span className="text-gradient">services</span>
           </h2>
@@ -33,7 +33,7 @@ export default function Services() {
             Une approche complète pour transformer votre vision en réalité digitale. 
             Chaque service est conçu pour maximiser votre ROI et votre satisfaction.
           </p>
-        </div>
+        </header>
 
         {/* Grille des services */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
