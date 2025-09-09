@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 interface Project {
   title: string
@@ -15,7 +15,10 @@ interface Project {
 
 export default function Portfolio() {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [touchStart, setTouchStart] = useState<number | null>(null)
+  const [touchEnd, setTouchEnd] = useState<number | null>(null)
   
   const completedProjects: Project[] = [
     {
@@ -60,10 +63,21 @@ export default function Portfolio() {
     inProgress: true
   };
 
+  // Détection mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
   const scrollToProject = (index: number) => {
     if (scrollContainerRef.current) {
       const container = scrollContainerRef.current
-      const projectWidth = container.children[0]?.clientWidth || 0
+      const projectWidth = isMobile ? 280 : 320 // Largeur adaptée mobile/desktop
       const gap = 32 // gap-8 = 2rem = 32px
       const scrollLeft = index * (projectWidth + gap)
       
@@ -83,6 +97,30 @@ export default function Portfolio() {
   const scrollRight = () => {
     const newIndex = currentIndex < completedProjects.length - 1 ? currentIndex + 1 : 0
     scrollToProject(newIndex)
+  }
+
+  // Gestion du touch pour mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null)
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+    
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > 50
+    const isRightSwipe = distance < -50
+
+    if (isLeftSwipe) {
+      scrollRight()
+    } else if (isRightSwipe) {
+      scrollLeft()
+    }
   }
 
   // Composant d'animation de chargement
@@ -120,10 +158,12 @@ export default function Portfolio() {
 
         {/* Carrousel des projets */}
         <div className="relative">
-          {/* Boutons de navigation */}
+          {/* Boutons de navigation - cachés sur mobile */}
           <button
             onClick={scrollLeft}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full p-3 hover:bg-white/30 transition-all duration-300"
+            className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full p-3 hover:bg-white/30 transition-all duration-300 ${
+              isMobile ? 'hidden' : 'block'
+            }`}
             aria-label="Projet précédent"
           >
             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -133,7 +173,9 @@ export default function Portfolio() {
           
           <button
             onClick={scrollRight}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full p-3 hover:bg-white/30 transition-all duration-300"
+            className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full p-3 hover:bg-white/30 transition-all duration-300 ${
+              isMobile ? 'hidden' : 'block'
+            }`}
             aria-label="Projet suivant"
           >
             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -146,13 +188,16 @@ export default function Portfolio() {
             ref={scrollContainerRef}
             className="flex gap-8 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           >
             {completedProjects.map((project, index) => (
             <div
               key={index}
-              className={`bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg hover:bg-white/15 hover:border-white/30 transition-all duration-500 group overflow-hidden flex-shrink-0 w-80 snap-center ${
-                project.featured ? '' : ''
-              }`}
+              className={`bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg hover:bg-white/15 hover:border-white/30 transition-all duration-500 group overflow-hidden flex-shrink-0 snap-center ${
+                isMobile ? 'w-72' : 'w-80'
+              } ${project.featured ? '' : ''}`}
               style={{ animationDelay: `${index * 100}ms` }}
             >
               {/* Image */}
@@ -246,7 +291,7 @@ export default function Portfolio() {
             ))}
           </div>
           
-          {/* Indicateurs de position */}
+          {/* Indicateurs de position - toujours visibles */}
           <div className="flex justify-center mt-6 space-x-2">
             {completedProjects.map((_, index) => (
               <button
@@ -261,6 +306,15 @@ export default function Portfolio() {
               />
             ))}
           </div>
+          
+          {/* Instructions pour mobile */}
+          {isMobile && (
+            <div className="text-center mt-4">
+              <p className="text-sm text-gray-400">
+                👆 Glissez pour naviguer entre les projets
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Section Projet en cours - Séparée */}
