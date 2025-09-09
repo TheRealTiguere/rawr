@@ -8,7 +8,7 @@ interface Project {
   description: string
   image: string
   technologies: string[]
-  link: string | null
+  link?: string
   featured?: boolean
   inProgress?: boolean
 }
@@ -59,7 +59,6 @@ export default function Portfolio() {
     description: "Application web innovante pour la gestion d'entreprise avec tableau de bord interactif, analytics avancés et intégrations API.",
     image: "/images/portfolio/saas-projet-encours.png",
     technologies: ["Next.js", "TypeScript", "Prisma", "PostgreSQL"],
-    link: null,
     inProgress: true
   };
 
@@ -224,7 +223,7 @@ export default function Portfolio() {
                     </div>
                     <span className="text-sm font-medium">Développement en cours</span>
                   </div>
-                ) : (
+                ) : project.link ? (
                   <a 
                     href={project.link} 
                     target="_blank" 
@@ -236,6 +235,10 @@ export default function Portfolio() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </a>
+                ) : (
+                  <div className="flex items-center text-gray-400">
+                    <span className="text-sm font-medium">Lien non disponible</span>
+                  </div>
                 )}
               </div>
               
