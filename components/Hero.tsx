@@ -43,11 +43,11 @@ export default function Hero() {
         {/* Numéro de téléphone */}
         <div className="mb-8">
           <a 
-            href="tel:+33972174595" 
+            href="tel:+33185092075" 
             className="inline-flex items-center px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-white/20 transition-all duration-300 cursor-pointer"
           >
             <span className="text-amber-400 mr-3">📞</span>
-            <span className="font-medium">09 72 17 45 95</span>
+            <span className="font-medium">01 85 09 20 75</span>
           </a>
         </div>
         

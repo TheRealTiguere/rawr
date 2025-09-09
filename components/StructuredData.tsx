@@ -19,7 +19,7 @@ export default function StructuredData() {
     },
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+33972174595",
+      "telephone": "+33185092075",
       "contactType": "customer service",
       "availableLanguage": "French"
     },

@@ -13,8 +13,8 @@ export default function Contact() {
     {
       icon: "📞",
       title: "Téléphone",
-      content: "09 72 17 45 95",
-      link: "tel:+33972174595"
+      content: "01 85 09 20 75",
+      link: "tel:+33185092075"
     },
     {
       icon: "⏰",
