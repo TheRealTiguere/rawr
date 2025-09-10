@@ -1,16 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { inquirySchema } from '@/lib/validations'
-import { prisma } from '@/lib/prisma'
 import { sendInquiryNotification } from '@/lib/email'
+
+async function verifyRecaptcha(token: string): Promise<boolean> {
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY
+  if (!secretKey) {
+    console.warn('RECAPTCHA_SECRET_KEY non configurée')
+    return true // En mode développement, on accepte sans vérification
+  }
+
+  try {
+    const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `secret=${secretKey}&response=${token}`,
+    })
+
+    const data = await response.json()
+    
+    // Pour reCAPTCHA v3, vérifier le score (0.0 = bot, 1.0 = humain)
+    if (data.success && data.score !== undefined) {
+      const score = parseFloat(data.score)
+      console.log(`reCAPTCHA v3 score: ${score}`)
+      // Accepter si score >= 0.5 (ajustable selon vos besoins)
+      return score >= 0.5
+    }
+    
+    return data.success === true
+  } catch (error) {
+    console.error('Erreur vérification reCAPTCHA:', error)
+    return false
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
-    // Vérifier la connexion à la base de données
-    if (!process.env.DATABASE_URL) {
-      return NextResponse.json({ error: 'Base de données non configurée' }, { status: 500 })
-    }
-
     const body = await request.json()
+    
+    // Vérification reCAPTCHA
+    if (body.recaptchaToken) {
+      const isValidRecaptcha = await verifyRecaptcha(body.recaptchaToken)
+      if (!isValidRecaptcha) {
+        return NextResponse.json({ error: 'Vérification reCAPTCHA échouée' }, { status: 400 })
+      }
+    }
     
     // Validation avec Zod
     const validatedData = inquirySchema.parse(body)
@@ -20,24 +55,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Spam détecté' }, { status: 400 })
     }
     
-    // Création de la demande
-    const inquiry = await prisma.inquiry.create({
-      data: {
-        name: validatedData.name,
-        email: validatedData.email,
-        phone: validatedData.phone || null,
-        budget: validatedData.budget || null,
-        message: validatedData.message,
-      },
-    })
-    
     // Envoi de l'email de notification
-    await sendInquiryNotification(validatedData)
+    const emailResult = await sendInquiryNotification(validatedData)
+    
+    if (!emailResult.success) {
+      return NextResponse.json({ 
+        error: 'Erreur lors de l\'envoi de l\'email. Veuillez réessayer.' 
+      }, { status: 500 })
+    }
     
     return NextResponse.json({ 
       success: true, 
-      message: 'Votre demande a été envoyée avec succès !',
-      id: inquiry.id 
+      message: 'Votre demande a été envoyée avec succès !' 
     })
     
   } catch (error) {
@@ -49,76 +78,3 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest) {
-  try {
-    // Vérifier la connexion à la base de données
-    if (!process.env.DATABASE_URL) {
-      return NextResponse.json({ error: 'Base de données non configurée' }, { status: 500 })
-    }
-
-    const { searchParams } = new URL(request.url)
-    const format = searchParams.get('format')
-    
-    if (format === 'csv') {
-      const inquiries = await prisma.inquiry.findMany({
-        orderBy: { createdAt: 'desc' }
-      })
-      
-      const csvContent = [
-        'ID,Nom,Email,Téléphone,Budget,Message,Statut,Date de création',
-        ...inquiries.map(inquiry => 
-          `"${inquiry.id}","${inquiry.name}","${inquiry.email}","${inquiry.phone || ''}","${inquiry.budget || ''}","${inquiry.message.replace(/"/g, '""')}","${inquiry.status}","${inquiry.createdAt.toISOString()}"`
-        )
-      ].join('\n')
-      
-      return new NextResponse(csvContent, {
-        headers: {
-          'Content-Type': 'text/csv',
-          'Content-Disposition': 'attachment; filename="demandes-devis.csv"'
-        }
-      })
-    }
-    
-    // Récupération JSON avec pagination et filtres
-    const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '20')
-    const status = searchParams.get('status')
-    const search = searchParams.get('search')
-    
-    const where: any = {}
-    if (status && status !== 'ALL') {
-      where.status = status
-    }
-    if (search) {
-      where.OR = [
-        { name: { contains: search, mode: 'insensitive' } },
-        { email: { contains: search, mode: 'insensitive' } },
-        { message: { contains: search, mode: 'insensitive' } }
-      ]
-    }
-    
-    const [inquiries, total] = await Promise.all([
-      prisma.inquiry.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
-        take: limit,
-      }),
-      prisma.inquiry.count({ where })
-    ])
-    
-    return NextResponse.json({
-      inquiries,
-      pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit)
-      }
-    })
-    
-  } catch (error) {
-    console.error('Erreur API GET /api/inquiries:', error)
-    return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
-  }
-}

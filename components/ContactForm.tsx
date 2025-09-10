@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import ReCAPTCHA from 'react-google-recaptcha'
 import { inquirySchema, type InquiryFormData } from '@/lib/validations'
 
 export default function ContactForm() {
@@ -17,6 +18,15 @@ export default function ContactForm() {
   const [errors, setErrors] = useState<Partial<InquiryFormData>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
+  const recaptchaRef = useRef<ReCAPTCHA>(null)
+
+  // Exécuter reCAPTCHA v3 au chargement du composant
+  useEffect(() => {
+    if (recaptchaRef.current && process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) {
+      recaptchaRef.current.execute()
+    }
+  }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target
@@ -33,12 +43,29 @@ export default function ContactForm() {
     }
   }
 
+  const handleRecaptchaChange = (token: string | null) => {
+    setRecaptchaToken(token)
+  }
+
+  const handleRecaptchaExpired = () => {
+    setRecaptchaToken(null)
+    // Re-exécuter reCAPTCHA v3
+    if (recaptchaRef.current) {
+      recaptchaRef.current.execute()
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
     setSubmitStatus('idle')
     
     try {
+      // Vérification reCAPTCHA
+      if (!recaptchaToken) {
+        throw new Error('Veuillez vérifier que vous n\'êtes pas un robot')
+      }
+      
       // Validation avec Zod
       const validatedData = inquirySchema.parse(formData)
       
@@ -52,7 +79,10 @@ export default function ContactForm() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(validatedData),
+        body: JSON.stringify({
+          ...validatedData,
+          recaptchaToken
+        }),
       })
       
       if (!response.ok) {
@@ -70,6 +100,11 @@ export default function ContactForm() {
         consent: false,
         honeypot: ''
       })
+      setRecaptchaToken(null)
+      // Re-exécuter reCAPTCHA v3 pour le prochain envoi
+      if (recaptchaRef.current) {
+        recaptchaRef.current.execute()
+      }
       
     } catch (error) {
       if (error instanceof Error) {
@@ -209,6 +244,15 @@ export default function ContactForm() {
           <p className="mt-1 text-sm text-red-600">{errors.message}</p>
         )}
       </div>
+
+      {/* reCAPTCHA v3 - Invisible */}
+      <ReCAPTCHA
+        ref={recaptchaRef}
+        sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
+        onChange={handleRecaptchaChange}
+        onExpired={handleRecaptchaExpired}
+        size="invisible"
+      />
 
       {/* Consentement RGPD */}
       <div className="flex items-start space-x-3">
