@@ -22,11 +22,17 @@ export default function Navigation() {
     { href: '#contact', label: 'Contact' }
   ];
 
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+  const handleLogoClick = () => {
+    // Si on est sur la page d'accueil, faire défiler vers le haut
+    if (window.location.pathname === '/') {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    } else {
+      // Sinon, rediriger vers la page d'accueil
+      window.location.href = '/';
+    }
   };
 
   return (
@@ -41,9 +47,9 @@ export default function Navigation() {
         <div className="flex items-center justify-between h-28">
           {/* Logo RAWR - Image */}
           <button 
-            onClick={scrollToTop}
+            onClick={handleLogoClick}
             className="flex items-center group cursor-pointer"
-            aria-label="Retour en haut de la page"
+            aria-label="Retour à l'accueil"
           >
             <div className="relative group-hover:scale-110 transition-transform duration-300">
               <img 
