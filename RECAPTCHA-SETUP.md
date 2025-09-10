@@ -53,14 +53,25 @@ RECAPTCHA_SECRET_KEY="votre-clé-secrète-ici"
 
 ## 🔧 Dépannage
 
-### reCAPTCHA ne s'affiche pas
+### reCAPTCHA visible au lieu d'invisible
+- **Problème** : Vous utilisez des clés reCAPTCHA v2 au lieu de v3
+- **Solution** : Créez un nouveau site avec le type "reCAPTCHA v3" sur Google reCAPTCHA
+
+### reCAPTCHA ne fonctionne pas
 - Vérifiez que `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` est bien configurée
+- Vérifiez que `RECAPTCHA_SECRET_KEY` est bien configurée
 - Redémarrez votre serveur de développement
 
 ### Erreur de vérification
-- Vérifiez que `RECAPTCHA_SECRET_KEY` est bien configurée
 - Vérifiez que le domaine est autorisé dans Google reCAPTCHA
+- Vérifiez que vous utilisez bien reCAPTCHA v3
 
 ### Mode développement
 - En développement, si les clés ne sont pas configurées, le reCAPTCHA est ignoré
 - En production, la vérification est obligatoire
+
+## ⚠️ Important : reCAPTCHA v3 vs v2
+
+- **reCAPTCHA v3** : Complètement invisible, analyse le comportement
+- **reCAPTCHA v2** : Visible avec case à cocher "Je ne suis pas un robot"
+- **Ce projet utilise v3** : Assurez-vous d'avoir créé un site v3 sur Google reCAPTCHA

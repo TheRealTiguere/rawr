@@ -245,14 +245,16 @@ export default function ContactForm() {
         )}
       </div>
 
-      {/* reCAPTCHA v3 - Invisible */}
-      <ReCAPTCHA
-        ref={recaptchaRef}
-        sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
-        onChange={handleRecaptchaChange}
-        onExpired={handleRecaptchaExpired}
-        size="invisible"
-      />
+      {/* reCAPTCHA v3 - Complètement invisible */}
+      <div className="hidden">
+        <ReCAPTCHA
+          ref={recaptchaRef}
+          sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
+          onChange={handleRecaptchaChange}
+          onExpired={handleRecaptchaExpired}
+          size="invisible"
+        />
+      </div>
 
       {/* Consentement RGPD */}
       <div className="flex items-start space-x-3">
