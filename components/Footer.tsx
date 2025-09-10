@@ -19,8 +19,16 @@ export default function Footer() {
   ];
 
   const socialLinks = [
-    { icon: "💼", label: "LinkedIn", href: "#" },
-    { icon: "📷", label: "Instagram", href: "#" }
+    { 
+      icon: <img src="/images/footer/picto_linkedin.webp" alt="LinkedIn" className="w-9 h-9" />, 
+      label: "LinkedIn", 
+      href: "https://www.linkedin.com/company/rawrfr/" 
+    },
+    { 
+      icon: <img src="/images/footer/picto_insta.webp" alt="Instagram" className="w-9 h-9" />, 
+      label: "Instagram", 
+      href: "https://instagram.com/rawragency.FR" 
+    }
   ];
 
   return (
@@ -63,6 +71,8 @@ export default function Footer() {
                 <a
                   key={index}
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-9 h-9 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-lg flex items-center justify-center text-sm transition-all duration-300 hover:scale-110 hover:border-amber-400/50"
                   aria-label={social.label}
                 >
